@@ -22,22 +22,27 @@ public class WeatherServiceImpl implements WeatherService {
         }
         RestTemplate restTemplate = new RestTemplate();
 
+        // appid free from
+        // https://openweathermap.org/
         UriComponentsBuilder uriComponentsBuilder = UriComponentsBuilder
-                .fromHttpUrl("http://api.openweathermap.org/data/2.5/forecast/daily")
-                .queryParam("q", cityName)
-                .queryParam("mode", "json")
-                .queryParam("units", "metric")
-                .queryParam("appid", "");
+                .fromHttpUrl(
+                        "http://api.openweathermap.org/data/2.5/forecast/daily")
+                .queryParam("q", cityName).queryParam("mode", "json")
+                .queryParam("units", "metric").queryParam("appid", "");
 
-        Forecast forecast = restTemplate.getForObject(uriComponentsBuilder.build().encode().toUri(), Forecast.class);
-        return forecast.getDays()
-                .stream()
-                .map((day) -> new DailyForecast(day.getDt(), day.getTemp().getDay(), day.getWeather().get(0).getDescription(), day.getSpeed(), day.getHumidity()))
+        Forecast forecast = restTemplate.getForObject(
+                uriComponentsBuilder.build().encode().toUri(), Forecast.class);
+        return forecast.getDays().stream()
+                .map((day) -> new DailyForecast(day.getDt(),
+                        day.getTemp().getDay(),
+                        day.getWeather().get(0).getDescription(),
+                        day.getSpeed(), day.getHumidity()))
                 .collect(Collectors.toList());
     }
 
     @Override
-    public CompletableFuture<List<DailyForecast>> getDailyForecastAsync(String cityname) {
+    public CompletableFuture<List<DailyForecast>> getDailyForecastAsync(
+            String cityname) {
         return CompletableFuture.supplyAsync(() -> getDailyForecast(cityname));
     }
 }
