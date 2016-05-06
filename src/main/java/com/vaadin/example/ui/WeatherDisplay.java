@@ -2,23 +2,22 @@ package com.vaadin.example.ui;
 
 import com.vaadin.data.Property;
 import com.vaadin.data.util.BeanItemContainer;
-import com.vaadin.data.util.converter.Converter;
 import com.vaadin.example.backend.WeatherService;
 import com.vaadin.example.backend.domain.DailyForecast;
-import com.vaadin.server.ExternalResource;
-import com.vaadin.server.Resource;
 import com.vaadin.spring.annotation.SpringComponent;
 import com.vaadin.spring.annotation.UIScope;
 import com.vaadin.ui.*;
-import com.vaadin.ui.renderers.ImageRenderer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Collections;
-import java.util.Locale;
 
 @UIScope
 @SpringComponent
 public class WeatherDisplay extends VerticalLayout {
+
+    private static final Logger logger = LoggerFactory.getLogger(WeatherDisplay.class);
 
     @Autowired
     private WeatherService weatherService;
@@ -59,11 +58,11 @@ public class WeatherDisplay extends VerticalLayout {
 
         loadingIndicator.setVisible(true);
 
-        String cityname = cityNameField.getValue();
+        String cityName = cityNameField.getValue();
 
-        weatherService.getDailyForecastAsync(cityname).exceptionally(ex -> {
-            loadingIndicator.setVisible(true);
-            Notification.show("Error while searching for " + cityname, Notification.Type.ERROR_MESSAGE);
+        weatherService.getDailyForecastAsync(cityName).exceptionally(ex -> {
+            logger.error("Error while searching for " + cityName, ex);
+            Notification.show("Error while searching for " + cityName, Notification.Type.ERROR_MESSAGE);
             return Collections.emptyList();
         }).thenAccept(dailyForecast -> {
             getUI().access(() -> {

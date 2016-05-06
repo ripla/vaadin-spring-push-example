@@ -27,7 +27,7 @@ public class WeatherServiceImpl implements WeatherService {
                 .queryParam("q", cityName)
                 .queryParam("mode", "json")
                 .queryParam("units", "metric")
-                .queryParam("appid", "bd82977b86bf27fb59a04b61b657fb6f");
+                .queryParam("appid", "");
 
         Forecast forecast = restTemplate.getForObject(uriComponentsBuilder.build().encode().toUri(), Forecast.class);
         return forecast.getDays()
